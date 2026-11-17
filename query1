@@ -1,0 +1,12 @@
+SELECT
+  B.Book_id,
+  B.Title,
+  P.Name AS Publisher_Name,
+  BA.Author_Name,
+  LB.Branch_Name,
+  BC.No_of_Copies
+FROM BOOK B
+JOIN PUBLISHER P       ON B.Pub_id = P.Pub_id
+JOIN BOOK_AUTHORS BA   ON B.Book_id = BA.Book_id
+JOIN BOOK_COPIES BC    ON B.Book_id = BC.Book_id
+JOIN LIBRARY_BRANCH LB ON BC.Branch_id = LB.Branch_id;
