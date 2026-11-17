@@ -75,3 +75,13 @@ INSERT INTO WORKS_ON VALUES
 ('E006',103,40),
 ('E001',104,10),
 ('E003',105,15);
+
+INSERT INTO EMPLOYEE VALUES
+('E007','Emp7','Bangalore','M',700000,NULL,4),
+('E008','Emp8','Bangalore','F',650000,NULL,4),
+('E009','Emp9','Mysore','M',620000,NULL,4),
+('E010','Emp10','Delhi','F',610000,NULL,4),
+('E011','Emp11','Hubli','M',500000,NULL,4),
+('E012','Emp12','Mysore','F',450000,NULL,4);
+
+INSERT INTO DEPARTMENT VALUES (4,'Research','E007','2023-01-01');
