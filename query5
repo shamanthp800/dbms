@@ -1,0 +1,48 @@
+SELECT DISTINCT P.PNo
+FROM PROJECT P
+LEFT JOIN WORKS_ON W   ON P.PNo = W.PNo
+LEFT JOIN EMPLOYEE E   ON W.SSN = E.SSN
+LEFT JOIN DEPARTMENT D ON P.DNo = D.DNo
+WHERE E.Name LIKE '%Seo'
+   OR D.MgrSSN IN (SELECT SSN FROM EMPLOYEE WHERE Name LIKE '%Seo');
+
+------------------2----------------------
+
+SELECT E.SSN, E.Name, E.Salary, E.Salary * 1.10 AS NewSalary
+FROM EMPLOYEE E
+JOIN WORKS_ON W ON E.SSN = W.SSN
+JOIN PROJECT P  ON W.PNo = P.PNo
+WHERE P.PName = 'IoT';
+
+----------------3-------------------------
+
+SELECT SUM(E.Salary) AS TotalSalary,
+       MAX(E.Salary) AS MaxSalary,
+       MIN(E.Salary) AS MinSalary,
+       AVG(E.Salary) AS AvgSalary
+FROM EMPLOYEE E
+JOIN DEPARTMENT D ON E.DNo = D.DNo
+WHERE D.DName = 'Accounts';
+
+-----------------4----------------------
+
+SELECT E.Name
+FROM EMPLOYEE E
+WHERE NOT EXISTS (
+  SELECT P.PNo
+  FROM PROJECT P
+  WHERE P.DNo = 2
+    AND NOT EXISTS (
+      SELECT W.SSN
+      FROM WORKS_ON W
+      WHERE W.PNo = P.PNo AND W.SSN = E.SSN
+    )
+);
+
+------------------------5-------------------
+SELECT D.DNo,
+       SUM(CASE WHEN E.Salary > 600000 THEN 1 ELSE 0 END) AS High_Earners
+FROM DEPARTMENT D
+JOIN EMPLOYEE E ON D.DNo = E.DNo
+GROUP BY D.DNo
+HAVING COUNT(*) > 5;
