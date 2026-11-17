@@ -1,0 +1,46 @@
+SELECT M.Mov_Title
+FROM MOVIES M
+JOIN DIRECTOR D ON M.Dir_id = D.Dir_id
+WHERE D.Dir_Name = 'ABCD';
+
+---------------2----------------
+SELECT DISTINCT M.Mov_Title
+FROM MOVIES M
+JOIN MOVIE_CAST MC ON M.Mov_id = MC.Mov_id
+WHERE MC.Act_id IN (
+  SELECT Act_id
+  FROM MOVIE_CAST
+  GROUP BY Act_id
+  HAVING COUNT(DISTINCT Mov_id) >= 2
+);
+
+-----------------------3-------------------
+
+SELECT DISTINCT A.Act_Name
+FROM ACTOR A
+JOIN MOVIE_CAST MC1 ON A.Act_id = MC1.Act_id
+JOIN MOVIES M1      ON MC1.Mov_id = M1.Mov_id
+JOIN MOVIE_CAST MC2 ON A.Act_id = MC2.Act_id
+JOIN MOVIES M2      ON MC2.Mov_id = M2.Mov_id
+WHERE M1.Mov_Year < 2000 AND M2.Mov_Year > 2015;
+
+------------------4------------------
+
+SELECT M.Mov_Title, MAX(R.Rev_Stars) AS Highest_Stars
+FROM MOVIES M
+JOIN RATING R ON M.Mov_id = R.Mov_id
+GROUP BY M.Mov_Title
+ORDER BY M.Mov_Title;
+
+--------------------5-------------------
+
+UPDATE RATING
+SET Rev_Stars = 5
+WHERE Mov_id IN (
+  SELECT M.Mov_id
+  FROM MOVIES M
+  JOIN DIRECTOR D ON M.Dir_id = D.Dir_id
+  WHERE D.Dir_Name = 'XYZ'
+);
+
+SELECT * FROM RATING;
