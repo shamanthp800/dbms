@@ -1,0 +1,60 @@
+SELECT COUNT(*) AS Count_Above_Avg
+FROM CUSTOMER
+WHERE Grade > (
+  SELECT AVG(Grade)
+  FROM CUSTOMER
+  WHERE City = 'Bangalore'
+);
+
+-------------2----------------
+
+SELECT
+  S.Salesman_id,
+  S.Name,
+  COUNT(C.Customer_id) AS No_of_Customers
+FROM SALESMAN S
+JOIN CUSTOMER C ON S.Salesman_id = C.Salesman_id
+GROUP BY S.Salesman_id, S.Name
+HAVING COUNT(C.Customer_id) > 1;
+
+--------------------3-----------------
+
+(
+  SELECT S.Salesman_id, S.Name, S.City, 'Has Customer in Same City' AS Status
+  FROM SALESMAN S
+  WHERE S.Salesman_id IN (
+    SELECT Salesman_id FROM CUSTOMER WHERE City = S.City
+  )
+)
+UNION
+(
+  SELECT S.Salesman_id, S.Name, S.City, 'No Customer in Same City' AS Status
+  FROM SALESMAN S
+  WHERE S.Salesman_id NOT IN (
+    SELECT Salesman_id FROM CUSTOMER WHERE City = S.City
+  )
+);
+
+-----------------------4---------------------
+CREATE VIEW Highest_Order_Salesman AS
+SELECT
+  S.Salesman_id,
+  S.Name AS Salesman_Name,
+  C.Cust_Name AS Customer_Name,
+  O.Ord_No,
+  O.Purchase_Amt,
+  O.Ord_Date
+FROM SALESMAN S
+JOIN ORDERS O   ON S.Salesman_id = O.Salesman_id
+JOIN CUSTOMER C ON O.Customer_id = C.Customer_id
+WHERE O.Purchase_Amt = (
+  SELECT MAX(Purchase_Amt)
+  FROM ORDERS
+  WHERE Ord_Date = O.Ord_Date
+);
+
+SELECT * FROM Highest_Order_Salesman;
+
+--------------------5-----------------------
+DELETE FROM SALESMAN WHERE Salesman_id = 1000;
+
