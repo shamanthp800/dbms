@@ -1,0 +1,44 @@
+SELECT S.*
+FROM STUDENT S
+JOIN CLASS C   ON S.USN = C.USN
+JOIN SEMSEC SS ON C.SSID = SS.SSID
+WHERE SS.Sem = 4 AND SS.Sec = 'C';
+
+--------------2------------------
+
+SELECT SS.Sem, SS.Sec, S.Gender, COUNT(*) AS Total
+FROM STUDENT S
+JOIN CLASS C   ON S.USN = C.USN
+JOIN SEMSEC SS ON C.SSID = SS.SSID
+GROUP BY SS.Sem, SS.Sec, S.Gender
+ORDER BY SS.Sem, SS.Sec;
+
+------------------3-------------------
+
+CREATE VIEW Test1_USN_11XX1234 AS
+SELECT Subcode, Test1
+FROM IA_MARKS
+WHERE USN = '11XX1234';
+
+SELECT * FROM Test1_USN_11XX1234;
+
+--------------------4---------------------------
+
+UPDATE IA_MARKS
+SET FinalIA = (Test1 + Test2 + Test3 - LEAST(Test1, Test2, Test3)) / 2;
+
+SELECT * FROM IA_MARKS;
+
+--------------------5-----------------------
+
+SELECT S.USN, S.SName, SS.Sem, SS.Sec, IA.FinalIA,
+CASE
+  WHEN IA.FinalIA BETWEEN 17 AND 20 THEN 'Outstanding'
+  WHEN IA.FinalIA BETWEEN 12 AND 16 THEN 'Average'
+  ELSE 'Weak'
+END AS Category
+FROM STUDENT S
+JOIN CLASS C     ON S.USN = C.USN
+JOIN SEMSEC SS   ON C.SSID = SS.SSID
+JOIN IA_MARKS IA ON S.USN = IA.USN
+WHERE SS.Sem = 8 AND SS.Sec IN ('A','B','C');
