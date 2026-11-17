@@ -10,3 +10,51 @@ JOIN PUBLISHER P       ON B.Pub_id = P.Pub_id
 JOIN BOOK_AUTHORS BA   ON B.Book_id = BA.Book_id
 JOIN BOOK_COPIES BC    ON B.Book_id = BC.Book_id
 JOIN LIBRARY_BRANCH LB ON BC.Branch_id = LB.Branch_id;
+
+-----2----------
+SELECT
+  Card_No,
+  COUNT(*) AS Total_Books_Borrowed
+FROM BOOK_LENDING
+WHERE Date_Out BETWEEN '2019-01-01' AND '2019-06-30'
+GROUP BY Card_No
+HAVING COUNT(*) > 8;
+----------3--------------
+DELETE FROM BOOK WHERE Book_id = 103;
+------------4-------------
+CREATE TABLE BOOK_PARTITIONED (
+  Book_id INT,
+  Title VARCHAR(100),
+  Pub_id INT,
+  Pub_Year INT,
+  PRIMARY KEY (Book_id, Pub_Year)
+)
+PARTITION BY RANGE (Pub_Year) (
+  PARTITION P1 VALUES LESS THAN (2019),
+  PARTITION P2 VALUES LESS THAN (2021),
+  PARTITION P3 VALUES LESS THAN (2023),
+  PARTITION P4 VALUES LESS THAN MAXVALUE
+);
+
+INSERT INTO BOOK_PARTITIONED VALUES
+(201, 'Database Systems', 1, 2018),
+(202, 'Operating Systems', 2, 2020),
+(203, 'Computer Networks', 1, 2017),
+(204, 'Artificial Intelligence', 3, 2021),
+(205, 'Machine Learning', 4, 2022);
+
+SELECT * FROM BOOK_PARTITIONED WHERE Pub_Year < 2019;
+
+------------5------------------
+
+CREATE VIEW Available_Books AS
+SELECT
+  B.Book_id,
+  B.Title,
+  SUM(BC.No_of_Copies) AS Total_Copies
+FROM BOOK B
+JOIN BOOK_COPIES BC ON B.Book_id = BC.Book_id
+GROUP BY B.Book_id, B.Title;
+
+SELECT * FROM Available_Books;
+
